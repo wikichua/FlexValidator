@@ -1,0 +1,18 @@
+{
+    "name": "wikchua/flex-validator",
+    "description": "Flexible Validator",
+    "keywords":     ["validator"],
+    "homepage":     "http://wikichua.com",
+    "license":      "MIT",
+    "authors": [
+        {
+            "name": "Chua Wei Kee",
+            "email": "wikichua@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "WikiChua\\FlexValidator": "src/"
+        }
+    }
+}
