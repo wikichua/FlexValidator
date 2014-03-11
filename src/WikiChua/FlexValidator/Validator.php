@@ -55,6 +55,16 @@ namespace WikiChua\FlexValidator
 			return $this->errors;
 		}
 
+		public function pass()
+		{
+			return count($this->errors) < 1? true:false;
+		}
+
+		public function fail()
+		{
+			return count($this->errors) >= 0? true:false;
+		}
+
 		static public function extend($key, callable $callback, $message = '')
 		{
 			Rules::extend($key,$callback,$message);
