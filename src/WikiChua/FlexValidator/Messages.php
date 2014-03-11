@@ -8,6 +8,7 @@ namespace WikiChua\FlexValidator
 			'required' => ':field is required.',
 			'same' => ':field must be same as :attribute.',
    			'between' => ':field must be between :attribute_1 and :attribute_2.',
+			'confirmed' => ':field must be :attribute',
 		];
 		
 		static public function make($method, $message, $fieldname, $attributes = [])

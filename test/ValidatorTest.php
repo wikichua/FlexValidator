@@ -1,9 +1,9 @@
 <?php
 
-
 namespace WikiChua\FlexValidator
 {
-require __dir__.'/../vendor/autoload.php';
+	require __dir__.'/../vendor/autoload.php';
+	
 	class ValidatorTest extends \PHPUnit_Framework_TestCase
 	{
 	    public function testCanMakeValidation()
@@ -28,10 +28,10 @@ require __dir__.'/../vendor/autoload.php';
 	    	];
 
 	    	$valid = Validator::make($Inputs,$Rules,$Messages);
-	    	$this->assertCount(3,$valid->getErrors());
+	    	$this->assertCount(1,$valid->getErrors());
 	    }
 
-	    public function testAbleToSetError()
+	    public function testAbleToSetAndGetError()
 	    {
 	    	$valid = Validator::make([],[],[]);
 	    	$valid->setError('test','Testing is done');
@@ -46,10 +46,29 @@ require __dir__.'/../vendor/autoload.php';
 	    {
 	    	Validator::extend('stupid',function($fieldname, $fieldvalue, $attributes){
 	    		return $fieldvalue == $attributes;
-	    	});
+	    	},":field must be :attribute ok?");
 	    }
 
 	    public function testCanUseExtendedRule()
+	    {
+	    	$Inputs = [
+	    		'username' => '',
+	    	];
+
+	    	$Rules = [
+	    		'username' => [
+	    			'required',
+	    			'same' => '3',
+	    			'between' => [1,5],
+	    			'stupid' => 'STUPID',
+	    			],
+	    	];
+
+	    	$valid = Validator::make($Inputs,$Rules);
+	    	$this->assertCount(1, $valid->getErrors());
+	    }
+
+	    public function testCanUseExtendedRuleMessage()
 	    {
 	    	$Inputs = [
 	    		'username' => '',
@@ -71,7 +90,40 @@ require __dir__.'/../vendor/autoload.php';
 	    	];
 
 	    	$valid = Validator::make($Inputs,$Rules,$Messages);
-	    	var_dump($valid->getErrors());
+	    	$this->assertCount(1, $valid->getErrors());
+	    }
+
+	    public function testConfirmInput()
+	    {
+	    	$Inputs = [
+	    		'password' => '3',
+	    		'password_confirmation' => 'e',
+	    		'text1' => '',
+	    		'text2' => 'f',
+	    	];
+
+	    	$Rules = [
+	    		'password' => [
+	    			'required',
+	    			'confirmed',
+	    		],
+	    		'password_confirmation' => [
+	    			'required',
+	    		],
+	    		'text1' => [
+	    			'required',
+	    			'confirmed' => 'text2',
+	    		],
+	    	];
+
+	    	$Messages = [
+	    		'password' => [
+	    			'confirmed' => ':field must be confirmed ok??',
+	    		],
+	    	];
+
+	    	$valid = Validator::make($Inputs,$Rules,$Messages);
+	    	$this->assertCount(2, $valid->getErrors());
 	    }
 	}
 }

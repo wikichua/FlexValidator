@@ -5,15 +5,22 @@ namespace WikiChua\FlexValidator
 	class Rules {
 
 		protected static $callbacks = [];
+		protected static $messages = [];
+		protected $Inputs = [];
 
-		static public function extend($key, callable $callback)
+		static public function extend($key, callable $callback, $message = '')
 		{
 			static::$callbacks[$key] = $callback;
+			unset(static::$messages[$key]);
+			if(!empty($message))
+				static::$messages[$key] = $message;
 		}
 		
-		static public function validate($method, $fieldname, $fieldvalue = '', $message = '')
+		static public function validate($method, $fieldname, $Inputs, $message = '')
 		{
 			$self = new self;
+			$self->Inputs = $Inputs;
+			$fieldvalue = $Inputs[$fieldname];
 			$attributes = null;
 			if(is_array($method))
 			{
@@ -31,7 +38,12 @@ namespace WikiChua\FlexValidator
 
 			if(!$valid)
 			{
-				return Messages::make($method,@$message[$method],$fieldname,$attributes);
+				if(isset($message[$method]) && array_key_exists($method, $message))
+				{
+					return Messages::make($method,@$message[$method],$fieldname,$attributes);
+				}else{
+					return Messages::make($method,@static::$messages[$method],$fieldname,$attributes);
+				}
 			}
 			return true;
 		}
@@ -49,6 +61,13 @@ namespace WikiChua\FlexValidator
 		protected function between($fieldname, $fieldvalue, $attributes)
 		{
 			return $fieldvalue > $attributes[0] && $fieldvalue <= $attributes[1];
+		}
+
+		protected function confirmed($fieldname, $fieldvalue, $attributes)
+		{
+			if(empty($attributes) || is_null($attributes))
+				$attributes = $fieldname . '_confirmation';
+			return $fieldvalue == $this->Inputs[$attributes];
 		}
 
 

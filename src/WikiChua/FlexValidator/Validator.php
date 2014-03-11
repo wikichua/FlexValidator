@@ -17,7 +17,7 @@ namespace WikiChua\FlexValidator
 					else
 						$rule = [$rule_key => $rule_value];
 
-					$valid = Rules::validate($rule, $fieldname, $Inputs[$fieldname],@$Messages[$fieldname]);
+					$valid = Rules::validate($rule, $fieldname, $Inputs ,@$Messages[$fieldname]);
 					if($valid !== true)
 						$self->setError($fieldname,$valid);
 				}
@@ -36,9 +36,9 @@ namespace WikiChua\FlexValidator
 					$this->errors[$key] = [];
 					if(is_array($temp_errors))
 					{
-						$this->errors = array_merge($temp_errors,[$value]);
+						$this->errors[$key] = array_merge($temp_errors,[$value]);
 					} else {
-						$this->errors = array_merge([$temp_errors],[$value]);
+						$this->errors[$key] = array_merge([$temp_errors],[$value]);
 					}
 				}else{
 					$this->errors[$key] = $value;
@@ -55,9 +55,9 @@ namespace WikiChua\FlexValidator
 			return $this->errors;
 		}
 
-		static public function extend($key, callable $callback)
+		static public function extend($key, callable $callback, $message = '')
 		{
-			Rules::extend($key,$callback);
+			Rules::extend($key,$callback,$message);
 		}
 	}
 }
