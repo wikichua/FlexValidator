@@ -49,7 +49,7 @@ namespace WikiChua\FlexValidator
 			}else{
 				$message = str_replace([':field'],[$fieldname],$message);
 				$i = 1;
-				if(count($attributes) > 2)
+				if(strpos(':attribute_', $message) < 1)
 				{
 					$message = str_replace([':attribute'],[implode(',',$attributes)],$message);
 				} else

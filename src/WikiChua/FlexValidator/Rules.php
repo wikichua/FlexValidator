@@ -50,6 +50,10 @@ namespace WikiChua\FlexValidator
 
 		protected function required($fieldname, $fieldvalue, $attributes)
 		{
+			if(isset($_FILES[$fieldname]))
+			{
+				return !empty($_FILES[$fieldname]['name']) && !is_null($_FILES[$fieldname]['name']);			
+			}
 			return !empty($fieldvalue) && !is_null($fieldvalue);
 		}
 
@@ -215,8 +219,18 @@ namespace WikiChua\FlexValidator
 
 		protected function mimes($fieldname, $fieldvalue, $attributes)
 		{
+			$attr = [];
+			if(is_array($attributes))
+			{
+				$attr = $attributes;
+				$attributes = implode(',',$attributes);
+			}else{
+				foreach (explode(',',$attributes) as $value) {
+					array_push($attr,trim($value));
+				}
+			}
 			$fieldvalue = end(explode('.',$_FILES[$fieldname]['name']));
-			return in_array($fieldvalue,$attributes);
+			return in_array($fieldvalue,$attr);
 		}
 
 	}
